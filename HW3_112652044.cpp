@@ -15,6 +15,7 @@
 #include <cmath>
 #include <tuple>
 #include <iomanip>
+#include <functional>
 
 //clear istream
 #define clearCin std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
@@ -24,20 +25,8 @@
 #define echo            "["<<color("Echoing",SGR::green)<<"] "
 #define inputError      "["<<color("Input error",SGR::brightRed)<<"] "
 //--------------------------
-#define Male            0b1
-#define Female          0b0
-#define Superhero       0b10
-#define Supervillain    0b00
-#define Steak           0b100
-#define Sushi           0b000
-#define Anime           0b100
-#define Sitocm          0b000
-#define flat            0b111
-#define Pompadour       0b011
-#define bangs           0b110
-#define bob             0b010
-//----------------------------
-typedef short HAIR;
+
+
 
 using namespace std;
 
@@ -62,116 +51,139 @@ enum class SGR{
 };
 
 
-double getAmount(){
-    double temp;
-    cout<<"\x1b[s"<<left<<setw(49)<<setfill('_')
-        <<"Enter the amount needed (an int)"<<":";
-    while(1){
-        cin>>temp;
-        if(cin.fail()){
-            cin.clear();
-            cout<<"\x1b[u\x1b[0J\x1b[s"<<left<<setw(58)<<setfill('_')
-                <<"Enter the amount needed"+(string)color(" (an int)",SGR::brightRed)<<":";
-        }
-        else if(temp<0){
-            cout<<"\x1b[u\x1b[0J\x1b[s"<<left<<setw(58)<<setfill('_')
-                <<"Enter the amount needed"+(string)color(" (an int)",SGR::brightRed)<<":";
-        }else{
-            clearCin;
-            break;
-        } 
-        clearCin;
+class HairStyle{
+public:
+    
+    function<HairStyle*()> run ;
+    std::pair<string,string> result;
+    HairStyle(){
+        run=std::bind(getSex,this);
     }
-    return temp;
-}
-double getRate(){
-    double temp;
-    cout<<"\x1b[s"<<left<<setw(49)<<setfill('_')
-        <<"Enter the interest rate (a real)"<<":";
-    while(1){
-        cin>>temp;
-        if(cin.fail()){
-            cin.clear();
-            cout<<"\x1b[u\x1b[0J\x1b[s"<<left<<setw(58)<<setfill('_')
-                <<"Enter the interest rate"+(string)color(" (a real)",SGR::brightRed)<<":";
+    HairStyle* getSex(){
+        string in ;
+        cin>>in;
+        if (in=="Male"){
+            run=std::bind(getSuperM,this);    
         }
-        else if(temp<0){
-            cout<<"\x1b[u\x1b[0J\x1b[s"<<left<<setw(58)<<setfill('_')
-                <<"Enter the interest rate"+(string)color(" (a real)",SGR::brightRed)<<":";
-        }else{
-            clearCin;
-            break;
-        } 
-        clearCin;
+        else if (in=="Female"){
+            run=std::bind(getSuperF,this);
+        }
+        return this;
     }
-    return temp;
-}
-int getmonth(){
-    double temp;
-    cout<<"\x1b[s"<<"Enter the duration of the load in months (an int):";
+    HairStyle* getSuperM(){
+        string in ;
+        cin>>in;
+        if (in=="Superhero"){ 
+            run=std::bind(getFood,this);    
+        }
+        else if (in=="Supervillain") {
+            result={"Male Supreuillain","mohawk"};
+            run=std::bind(nothing,this);
+        }
+        return this;
+    }
+    HairStyle* getSuperF(){
+        string in ;
+        cin>>in;
+        if (in=="Superhero"){
+            run=std::bind(getMovie,this);    
+        }
+        else if (in=="Supervillain") {
+            result={"Female Supreuillain","mohawk"};
+            run=std::bind(nothing,this);
+        }
+        return this;
+    }
+    HairStyle* getFood(){
+        string in ;
+        cin>>in;
+        if ( in == "Steak" ){
+            result={"Male Suprehero steak","flat top"};
+            run=std::bind(nothing,this);    
+        }
+        else if ( in == "Sushi" ){
+            result={"Male Suprehero sushi","pompadour"};
+            run=std::bind(nothing,this);    
+        }
+        return this;
+    }
+    HairStyle* getMovie(){
+        string in ;
+        cin>>in;
+        if ( in == "anime" ){
+            result={"Female Suprehero anime","bangs"};
+            run=std::bind(nothing,this);    
+        }
+        else if ( in == "Sticom" ){
+            result={"Male Suprehero sticom","bob"};
+            run=std::bind(nothing,this);    
+        }
+        return this;
+    }
+    HairStyle* nothing(){
+        run=std::bind(nothing,this);
+        return this;
+    }
+    HairStyle* getStep(){
+        return this;
+    }
+
+
+};
+
+template<typename T>
+T getInput(function<bool(T)> check){
+    T inp;
     while(1){
-        cin>>temp;
+        cin>>inp;
         if(cin.fail()){
             cin.clear();
+            
             cout<<"\x1b[u\x1b[0J\x1b[s"
                 <<"Enter the duration of the load in months"
                 <<color(" (an int)",SGR::brightRed)<<":";
+            
+            clearCin;
+            continue;
         }
-        else if(temp<0){
+        if(!check(inp)){
+            
             cout<<"\x1b[u\x1b[0J\x1b[s"
                 <<"Enter the duration of the load in months"
                 <<color(" (an int)",SGR::brightRed)<<":";
-        }else{
+            
             clearCin;
-            break;
-        } 
+            continue;
+        }
+        
         clearCin;
+        break;
     }
-    return temp;
-}
-void getSex(HAIR& style){
-    string in;
-    if(in=="Male")      style|=Male;
-    if(in=="Female")    style|=Female;
+    return inp;
 }
 
-tuple<int,int,bool>compute(double amount,double rate,int month){
-    tuple<int,int,bool> temp; //faceValue monthiyPayment Warraing
-    double faceValue =(amount)/(1-rate*0.01*month*(1.f/12.f));
-    double monPayment=faceValue/((double)month);
-    if(faceValue>(1.5*amount)){
-        get<2>(temp)=1;
-    }
-    get<0>(temp)=round(faceValue);
-    get<1>(temp)=round(monPayment);
-    return temp;
-}
-//Ask if user want to continue
-bool again(){   
-    char temp;
-    cout<<"Do you want to continue?(Y/N) :"<<endl;;
-    while(1){
-        cout<<inputSign;
-        cin>>temp;
-        if     (temp=='y' || temp=='Y') return true;
-        else if(temp=='n' || temp=='N') return false;
-        else    cout<<"Do you want to continue?(Y/N) :"<<endl;
-        clearCin;
-    }
-    
-}
+
+
+typedef HairStyle Step;
 
 int main(){
     
     int n;
+        
     cin>>n;
     for(int i=0;i<n;i++){
+
+        HairStyle* style=new HairStyle();
         
+        Step* getSex=style->getStep();
+        auto getSuper = getSex->run();
+        auto getLast  = getSuper->run();
+        auto stop     = getLast->run();
 
 
-
-
-
+        cout<<style->result.first<<" "<<style->result.second<<endl;
+        
+        delete style;
     }
 
     return 0;
