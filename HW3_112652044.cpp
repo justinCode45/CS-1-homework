@@ -50,12 +50,29 @@ enum class SGR
     brightWhite
 };
 
+/**
+ * @brief Converts uppercase letters to lowercase letters.
+ * 
+ * @param in The character to be converted.
+ * @return char The converted character.
+ */
 char alower(char in)
 {
     if (in <= 'Z' && in >= 'A')
         return in - ('Z' - 'z');
     return in;
 }
+/**
+ * @brief A template function that takes a function object, a prompt message, and an error message as input. 
+ *        It prompts the user to input a value of type T, checks if the input is valid using the provided function object, 
+ *        and returns the input if it is valid. If the input is invalid, it displays the error message and prompts the user again.
+ * 
+ * @tparam T The type of the input value.
+ * @param check A function object that takes a value of type T as input and returns a boolean indicating whether the input is valid or not.
+ * @param prompt The prompt message to display to the user.
+ * @param eprompt The error message to display if the input is invalid.
+ * @return T The valid input value of type T.
+ */
 template <class T>
 T getInput(function<bool(T)> check, string prompt, string eprompt)
 {
@@ -63,7 +80,10 @@ T getInput(function<bool(T)> check, string prompt, string eprompt)
     cout << prompt;
     while (1)
     {
+        cout << "\x1b[" + to_string((int)SGR::brightYellow) + "m";
         cin >> inp;
+        cout << "\x1b[0m";
+
         if (cin.fail() || !check(inp))
         {
             cin.clear();
@@ -82,143 +102,17 @@ class HairStyle
 public:
     function<HairStyle *()> run;
     std::pair<string, string> result;
-
-    HairStyle()
-    {
-        run = std::bind(getSex, this);
-    }
-    HairStyle *getStep()
-    {
-        return this;
-    }
+    HairStyle();
+    HairStyle *getStep();
 
 private:
-    HairStyle *getSex()
-    {
-        string in = getInput<string>(
-            [](string x) -> bool
-            {
-                std::transform(x.begin(), x.end(), x.begin(), alower);
-                return x == "male" || x == "female";
-            },
-            color("Male", SGR::brightYellow) " or " color("Female", SGR::brightYellow) "? ",
-            color("Male", SGR::brightRed) " or " color("Female", SGR::brightRed) "? ");
-
-        std::transform(in.begin(), in.end(), in.begin(), alower);
-
-        if (in == "male")
-        {
-            run = std::bind(getSuperM, this);
-        }
-        else if (in == "female")
-        {
-            run = std::bind(getSuperF, this);
-        }
-        return this;
-    }
-    HairStyle *getSuperM()
-    {
-        string in = getInput<string>(
-            [](string x) -> bool
-            {
-                std::transform(x.begin(), x.end(), x.begin(), alower);
-                return x == "superhero" || x == "supervillain";
-            },
-            "Want to be a " color("Superhero", SGR::brightYellow) " or " color("Supervillain", SGR::brightYellow) "? ",
-            "Want to be a " color("Superhero", SGR::brightRed) " or " color("Supervillain", SGR::brightRed) "? ");
-
-        std::transform(in.begin(), in.end(), in.begin(), alower);
-
-        if (in == "superhero")
-        {
-            run = std::bind(getFood, this);
-        }
-        else if (in == "supervillain")
-        {
-            result = {"Male Supreuillain", "mohawk"};
-            run = std::bind(nothing, this);
-        }
-        return this;
-    }
-    HairStyle *getSuperF()
-    {
-        string in = getInput<string>(
-            [](string x) -> bool
-            {
-                std::transform(x.begin(), x.end(), x.begin(), alower);
-                return x == "superhero" || x == "supervillain";
-            },
-            "Want to be a " color("Superhero", SGR::brightYellow) " or " color("Supervillain", SGR::brightYellow) "? ",
-            "Want to be a " color("Superhero", SGR::brightRed) " or " color("Supervillain", SGR::brightRed) "? ");
-
-        std::transform(in.begin(), in.end(), in.begin(), alower);
-
-        if (in == "superhero")
-        {
-            run = std::bind(getMovie, this);
-        }
-        else if (in == "supervillain")
-        {
-            result = {"Female Supreuillain", "mohawk"};
-            run = std::bind(nothing, this);
-        }
-        return this;
-    }
-    HairStyle *getFood()
-    {
-        string in = getInput<string>(
-            [](string x) -> bool
-            {
-                std::transform(x.begin(), x.end(), x.begin(), alower);
-                return x == "sushi" || x == "steak";
-            },
-            "Prefer eating " color("Steak", SGR::brightYellow) " or " color("Sushi", SGR::brightYellow) "? ",
-            "Prefer eating " color("Steak", SGR::brightRed) " or " color("Sushi", SGR::brightRed) "? ");
-        std::transform(in.begin(), in.end(), in.begin(), alower);
-        if (in == "steak")
-        {
-            result = {"Male Suprehero steak", "flat top"};
-            run = std::bind(nothing, this);
-        }
-        else if (in == "sushi")
-        {
-            result = {"Male Suprehero sushi", "pompadour"};
-            run = std::bind(nothing, this);
-        }
-        return this;
-    }
-    HairStyle *getMovie()
-    {
-        string in = getInput<string>(
-            [](string x) -> bool
-            {
-                std::transform(x.begin(), x.end(), x.begin(), alower);
-                return x == "anime" || x == "sitcom";
-            },
-            "Prefer " color("Anime", SGR::brightYellow) " or " color("Sitcom", SGR::brightYellow) "? ",
-            "Prefer " color("Anime", SGR::brightRed) " or " color("Sitcom", SGR::brightRed) "? ");
-
-        std::transform(in.begin(), in.end(), in.begin(), alower);
-
-        if (in == "anime")
-        {
-            result = {"Female Suprehero anime", "bangs"};
-            run = std::bind(nothing, this);
-        }
-        else if (in == "sticom")
-        {
-            result = {"Male Suprehero sticom", "bob"};
-            run = std::bind(nothing, this);
-        }
-        return this;
-    }
-    HairStyle *nothing()
-    {
-        run = std::bind(nothing, this);
-        return this;
-    }
+    HairStyle *getSex();
+    HairStyle *getSuperM();
+    HairStyle *getSuperF();
+    HairStyle *getFood();
+    HairStyle *getMovie();
+    HairStyle *nothing();
 };
-
 typedef HairStyle Step;
 
 int main()
@@ -233,7 +127,6 @@ int main()
         "Enter the maxmum number of repetitions (as postive int) : ",
         "Enter the maxmum number of repetitions (" color("as postive int", SGR::brightRed) ") : ");
 
-    //--------
     cout << endl;
     for (int i = 0; i < n; i++)
     {
@@ -246,11 +139,145 @@ int main()
         Step *stop = getLast->run();
 
         cout << echo << "You entered: " << style->result.first << endl;
-        cout << "The recommended haircut: " << color(style->result.second, SGR::brightCyan) << endl;
+        cout << "The recommended haircut: "
+             << color(style->result.second, SGR::brightCyan) << endl;
         cout << endl;
 
         delete style;
     }
 
     return 0;
+}
+
+HairStyle::HairStyle()
+{
+    run = std::bind(getSex, this);
+}
+HairStyle *HairStyle::getStep()
+{
+    return this;
+}
+HairStyle *HairStyle::getSex()
+{
+    string in = getInput<string>(
+        [](string x) -> bool
+        {
+            std::transform(x.begin(), x.end(), x.begin(), alower);
+            return x == "male" || x == "female";
+        },
+        color("Male", SGR::brightWhite) " or " color("Female", SGR::brightWhite) "? ",
+        color("Male", SGR::brightRed) " or " color("Female", SGR::brightRed) "? ");
+
+    std::transform(in.begin(), in.end(), in.begin(), alower);
+
+    if (in == "male")
+    {
+        run = std::bind(getSuperM, this);
+    }
+    else if (in == "female")
+    {
+        run = std::bind(getSuperF, this);
+    }
+    return this;
+}
+HairStyle *HairStyle::getSuperM()
+{
+    string in = getInput<string>(
+        [](string x) -> bool
+        {
+            std::transform(x.begin(), x.end(), x.begin(), alower);
+            return x == "superhero" || x == "supervillain";
+        },
+        "Want to be a " color("Superhero", SGR::brightWhite) " or " color("Supervillain", SGR::brightWhite) "? ",
+        "Want to be a " color("Superhero", SGR::brightRed) " or " color("Supervillain", SGR::brightRed) "? ");
+
+    std::transform(in.begin(), in.end(), in.begin(), alower);
+
+    if (in == "superhero")
+    {
+        run = std::bind(getFood, this);
+    }
+    else if (in == "supervillain")
+    {
+        result = {"Male Supreuillain", "mohawk"};
+        run = std::bind(nothing, this);
+    }
+    return this;
+}
+HairStyle *HairStyle::getSuperF()
+{
+    string in = getInput<string>(
+        [](string x) -> bool
+        {
+            std::transform(x.begin(), x.end(), x.begin(), alower);
+            return x == "superhero" || x == "supervillain";
+        },
+        "Want to be a " color("Superhero", SGR::brightWhite) " or " color("Supervillain", SGR::brightWhite) "? ",
+        "Want to be a " color("Superhero", SGR::brightRed) " or " color("Supervillain", SGR::brightRed) "? ");
+
+    std::transform(in.begin(), in.end(), in.begin(), alower);
+
+    if (in == "superhero")
+    {
+        run = std::bind(getMovie, this);
+    }
+    else if (in == "supervillain")
+    {
+        result = {"Female Supreuillain", "mohawk"};
+        run = std::bind(nothing, this);
+    }
+    return this;
+}
+HairStyle *HairStyle::getFood()
+{
+    string in = getInput<string>(
+        [](string x) -> bool
+        {
+            std::transform(x.begin(), x.end(), x.begin(), alower);
+            return x == "sushi" || x == "steak";
+        },
+        "Prefer eating " color("Steak", SGR::brightWhite) " or " color("Sushi", SGR::brightWhite) "? ",
+        "Prefer eating " color("Steak", SGR::brightRed) " or " color("Sushi", SGR::brightRed) "? ");
+    std::transform(in.begin(), in.end(), in.begin(), alower);
+    if (in == "steak")
+    {
+        result = {"Male Suprehero steak", "flat top"};
+        run = std::bind(nothing, this);
+    }
+    else if (in == "sushi")
+    {
+        result = {"Male Suprehero sushi", "pompadour"};
+        run = std::bind(nothing, this);
+    }
+    return this;
+}
+HairStyle *HairStyle::getMovie()
+{
+    string in = getInput<string>(
+        [](string x) -> bool
+        {
+            std::transform(x.begin(), x.end(), x.begin(), alower);
+            return x == "anime" || x == "sitcom";
+        },
+        "Prefer " color("Anime", SGR::brightWhite) " or " color("Sitcom", SGR::brightWhite) "? ",
+        "Prefer " color("Anime", SGR::brightRed) " or " color("Sitcom", SGR::brightRed) "? ");
+
+    std::transform(in.begin(), in.end(), in.begin(), alower);
+
+    if (in == "anime")
+    {
+        result = {"Female Suprehero anime", "bangs"};
+        run = std::bind(nothing, this);
+    }
+    else if (in == "sitcom")
+    {
+        result = {"Male Suprehero sitcom", "bob"};
+        run = std::bind(nothing, this);
+    }
+    return this;
+}
+HairStyle *HairStyle::nothing()
+{
+    run = std::bind(nothing, this);
+    return this;
 }
