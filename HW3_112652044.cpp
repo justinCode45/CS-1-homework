@@ -97,6 +97,7 @@ T getInput(function<bool(T)> check, string prompt, string eprompt)
     return inp;
 }
 
+/// @brief Recommend hairstyle by answering questions form step.
 class HairStyle
 {
 public:
