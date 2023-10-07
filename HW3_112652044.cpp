@@ -3,7 +3,7 @@
  * Email Address:justin.sc12@nycu.edu.tw
  * HW Number:3
  * Description: The purpose of this program is to give hairstyle suggestions
-                 through the user's answers to questions.
+ *               through the user's answers to questions.
  * Last Change:Sep.23,2023
  * Anything special?
  * 1.Output text coloring.
