@@ -2,7 +2,8 @@
  * Author:Justin Chen
  * Email Address:justin.sc12@nycu.edu.tw
  * HW Number:3
- * Description:Calculate total loan repayment amount
+ * Description: The purpose of this program is to give hairstyle suggestions
+                 through the user's answers to questions.
  * Last Change:Sep.23,2023
  * Anything special?
  * 1.Output text coloring.
@@ -21,7 +22,8 @@
 // clear istream
 #define clearCin std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 // define some common outputs
-#define color(in, c) "\x1b[" + to_string((int)c) + 'm' + in + "\x1b[0m"
+#define CSI "\x1b["
+#define color(in, c) CSI + to_string((int)c) + 'm' + in + CSI "0m"
 #define inputSign color(">> ", SGR::brightYellow)
 #define echo "[" color("Echoing", SGR::green) "] "
 #define inputError "[" color("Input error", SGR::brightRed) "] "
@@ -52,7 +54,7 @@ enum class SGR
 
 /**
  * @brief Converts uppercase letters to lowercase letters.
- * 
+ *
  * @param in The character to be converted.
  * @return char The converted character.
  */
@@ -63,10 +65,10 @@ char alower(char in)
     return in;
 }
 /**
- * @brief A template function that takes a function object, a prompt message, and an error message as input. 
- *        It prompts the user to input a value of type T, checks if the input is valid using the provided function object, 
+ * @brief A template function that takes a function object, a prompt message, and an error message as input.
+ *        It prompts the user to input a value of type T, checks if the input is valid using the provided function object,
  *        and returns the input if it is valid. If the input is invalid, it displays the error message and prompts the user again.
- * 
+ *
  * @tparam T The type of the input value.
  * @param check A function object that takes a value of type T as input and returns a boolean indicating whether the input is valid or not.
  * @param prompt The prompt message to display to the user.
@@ -80,14 +82,14 @@ T getInput(function<bool(T)> check, string prompt, string eprompt)
     cout << prompt;
     while (1)
     {
-        cout << "\x1b[" + to_string((int)SGR::brightYellow) + "m";
+        cout << CSI + to_string((int)SGR::brightYellow) + "m";
         cin >> inp;
-        cout << "\x1b[0m";
+        cout << CSI "0m";
 
         if (cin.fail() || !check(inp))
         {
             cin.clear();
-            cout << "\x1b[1F\x1b[0J" << eprompt;
+            cout << CSI "1F" CSI "0J" << eprompt;
             clearCin;
             continue;
         }
