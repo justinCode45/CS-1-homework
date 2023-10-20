@@ -1,18 +1,29 @@
 #include <iostream>
 #include <functional>
-
+#include <tuple>
 using namespace std;
 
-void t(function<void(int)> h){
-    h(11);
-}
+int main()
+{
+    tuple<int, int> t;
+    t = make_tuple(1, 2);
+    int m = get<0>(t);
+    cout << m << endl;
+    apply([](auto &...x)
+          { ( (cout << ... << x) << " "); },
+          t);
+    cout<<endl;
+    m+=1;
+    cout << m << endl;
+    apply([](auto &...x)
+          { ( (cout << ... << x) << " "); },
+          t);
+    get<0>(t) = 3;
+    cout << m << endl;
+    apply([](auto &...x)
+          { ( (cout << ... << x) << " "); },
+          t);
 
-int main(){
 
-    auto p =[](int x)->void {cout<<( x>10);};
-    
-    // cout<<p(11)<<endl;
-    t(p);
     return 0;
 }
-

@@ -1,7 +1,7 @@
 /* File Name:HW4_112652044.cpp
  * Author:Justin Chen
  * Email Address:justin.sc12@nycu.edu.tw
- * HW Number:3
+ * HW Number:4
  * Description: The purpose of this program is to give hairstyle suggestions
  *               through the user's answers to questions.
  * Last Change:Sep.23,2023
@@ -31,8 +31,8 @@
 //--------------------------
 using namespace std;
 
-// age height weight
-typedef tuple<int, double, double> Tidd;
+//  height weight age
+typedef tuple<double, double, int> Tddi;
 const double CM_PRE_INCH = 2.54;
 const double KG_PRE_POUND = 0.454;
 // ANSI SGR
@@ -57,25 +57,89 @@ enum class SGR
 };
 
 /**
- * @brief A template function that takes a function object, a prompt message, and an error message as input.
- *        It prompts the user to input a value of type T, checks if the input is valid using the provided function object,
- *        and returns the input if it is valid. If the input is invalid, it displays the error message and prompts the user again.
- *
- * @tparam T The type of the input value.
- * @param check A function object that takes a value of type T as input and returns a boolean indicating whether the input is valid or not.
- * @param prompt The prompt message to display to the user.
- * @param eprompt The error message to display if the input is invalid.
- * @return T The valid input value of type T.
+ * @brief This function takes a function object, a prompt message, and an error message as input.
+ *        It prompts the user to input values of type T..., and checks if the input values satisfy the condition specified by the function object.
+ *        If the input values do not satisfy the condition, it prompts the user to input again until the condition is satisfied.
+ * @tparam T The types of the input values.
+ * @param check A function object that takes a tuple of type T... as input and returns a bool indicating whether the input values satisfy a certain condition.
+ * @param prompt A string that represents the prompt message.
+ * @param eprompt A string that represents the error message.
+ * @return A tuple of type T... that contains the input values that satisfy the condition specified by the function object.
  */
-template <class T>
-T getInput(function<bool(T)> check, string prompt, string eprompt)
+template <class... T>
+tuple<T...> getInput(function<bool(tuple<T...> &)> check, string prompt, string eprompt);
+
+struct person
 {
-    T inp;
+    int age;
+    double height;
+    double weight;
+    person(double _height, double _weight, int _age)
+    {
+        age = _age;
+        height = _height / CM_PRE_INCH;
+        weight = _weight / KG_PRE_POUND;
+    }
+};
+
+double hatSize(const unique_ptr<person> &p);
+double jacketSize(const unique_ptr<person> &p);
+double waistSize(const unique_ptr<person> &p);
+
+void echoInput(double _height, double _weight, int _age);
+
+int main()
+{
+    cout << "The purpose of this program is to suggest hats, "
+         << "jackets, and waist sizes based on the input height and weight." << endl;
+
+    auto [n] = getInput<int>(
+        (function<bool(tuple<int> &)>)[](tuple<int> x)->bool { return get<0>(x) > 0; },
+        "Enter the maximum of repetitons (an int): ",
+        "Enter the maximum of repetitons (" color("an int", SGR::brightRed) "): ");
+
+    cout<<endl;
+    
+    for (int i = 0; i < n; i++)
+    {
+        auto [height, weight, age] = getInput<double, double, int>(
+            (function<bool(Tddi &)>)[](Tddi & in)->bool {
+                return get<0>(in) > 0 && get<1>(in) > 0 && get<2>(in) > 0;
+            },
+            "Enter height (int cm) and weight (in Kg) and age (3 postive ints) :",
+            "Enter height (int cm) and weight (in Kg) and age (" color("three ints", SGR::brightRed) ") :");
+
+        echoInput(height, weight, age);
+        auto p = make_unique<person>(height, weight, age);
+
+        double hat = hatSize(p);
+        double jacket = jacketSize(p);
+        double waist = waistSize(p);
+
+        cout << fixed << setprecision(2);
+        cout << "Hat Size=" << hat << ","
+             << "Jacket Size=" << jacket << ","
+             << "Waist in inches=" << waist
+             << endl;
+
+        cout << endl;
+    }
+
+    return 0;
+}
+
+template <class... T>
+tuple<T...> getInput(function<bool(tuple<T...> &)> check, string prompt, string eprompt)
+{
+    tuple<T...> inp;
     cout << prompt;
     while (1)
     {
         cout << CSI + to_string((int)SGR::brightYellow) + "m";
-        cin >> inp;
+        apply([](auto &...x)
+              { (cin >> ... >> x); },
+              inp);
+
         cout << CSI "0m";
 
         if (cin.fail() || !check(inp))
@@ -91,98 +155,25 @@ T getInput(function<bool(T)> check, string prompt, string eprompt)
     return inp;
 }
 
-struct person
-{
-    int age;
-    double height;
-    double weight;
-    person(Tidd x)
-    {
-        age = get<0>(x);
-        height = get<1>(x)/CM_PRE_INCH;
-        weight = get<2>(x)/KG_PRE_POUND;
-    }
-};
-
-double hatSize(unique_ptr<person> &p);
-double jacketSize(unique_ptr<person> &p);
-double waistSize(unique_ptr<person> &p);
-Tidd userInput();
-void echoInput(Tidd in);
-
-int main()
-{
-    cout << "purpose" << endl;
-
-    int n;
-    n = getInput<int>(
-        [](int x) -> bool
-        { return x > 0; },
-        "Enter the maximum of repetitons (an int): ",
-        "Enter the maximum of repetitons (" color("an int", SGR::brightRed) "): ");
-
-    for (int i = 0; i < n; i++)
-    {
-        Tidd data = userInput();
-        echoInput(data);
-        auto p = make_unique<person>(data);
-
-        double hat = hatSize(p);
-        double jacket = jacketSize(p);
-        double waist = waistSize(p);
-
-        cout << fixed << setprecision(2);
-        cout << "Hat Size=" << hat << ","
-             << "Jacket Size=" << jacket << ","
-             << "Waist in inches=" << waist
-             << endl;
-    }
-
-    return 0;
-}
-
-Tidd userInput()
-{
-    auto check = [](Tidd &in) -> bool
-    {
-        return get<0>(in) > 0 && get<1>(in) > 0 && get<2>(in);
-    };
-
-    Tidd in;
-    cout << "Enter height (int cm) and weight (in Kg) and age (three ints) :";
-    while (1)
-    {
-        cout << CSI + to_string((int)SGR::brightYellow) + "m";
-        cin >> get<1>(in) >> get<2>(in) >> get<0>(in);
-        cout << CSI "0m";
-        if (cin.fail() || check(in))
-        {
-            cin.clear();
-            cout << CSI "1F" CSI "0J"
-                 << "Enter height (int cm) and weight (in Kg) and age (" color("three ints", SGR::brightRed) ") :";
-            clearCin;
-            continue;
-        }
-        clearCin;
-        break;
-    }
-    return in;
-}
-void echoInput(Tidd in)
+void echoInput(double _height, double _weight, int _age)
 {
     cout << echo << "you entered:"
-         << get<0>(in) << " "
-         << get<1>(in) << " "
-         << get<2>(in) << endl;
+         << _height << " "
+         << _weight << " "
+         << _age << endl;
 }
 
-double hatSize(unique_ptr<person> &p)
+double hatSize(const unique_ptr<person> &p)
 {
-    
+    return (p->weight / p->height) * 2.9;
 }
-double jacketSize(unique_ptr<person> &p)
+
+double jacketSize(const unique_ptr<person> &p)
 {
+    return (p->height * p->weight) / 288.f + (p->age - 30) / 10 * 0.125;
 }
-double waistSize(unique_ptr<person> &p)
+
+double waistSize(const unique_ptr<person> &p)
 {
+    return p->weight / 5.7 + (p->age - 28) / 2 * 0.1;
 }
