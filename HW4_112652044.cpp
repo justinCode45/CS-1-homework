@@ -10,8 +10,8 @@
  * 2.Input error detection.
  * 
  * 
- * Complier: g++ (Rev2, Built by MSYS2 project) 13.2.0 ,201703
- *           g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0 ,201703
+ * Complier: g++ (Rev2, Built by MSYS2 project) 13.2.0 ,C++17
+ *           g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0 ,C++17
  * 
  */
 #include <iostream>
@@ -100,7 +100,7 @@ void echoInput(double _height, double _weight, int _age);
 int main()
 {
     signal(SIGINT, signalHandler);
-    cout<<__cplusplus<<endl;
+
     cout << "The purpose of this program is to suggest hats, "
          << "jackets, and waist sizes based on the input height and weight." << endl;
 
