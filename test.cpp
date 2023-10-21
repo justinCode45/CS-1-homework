@@ -1,29 +1,28 @@
 #include <iostream>
 #include <functional>
 #include <tuple>
+#include <sstream>
+#include <csignal>
+#include <windows.h>
 using namespace std;
+
+volatile sig_atomic_t stop = 0;
+void signalHandler(int signum)
+{
+	cout<<"in signal handler"<<endl;
+	stop = 1;
+}
 
 int main()
 {
-    tuple<int, int> t;
-    t = make_tuple(1, 2);
-    int m = get<0>(t);
-    cout << m << endl;
-    apply([](auto &...x)
-          { ( (cout << ... << x) << " "); },
-          t);
-    cout<<endl;
-    m+=1;
-    cout << m << endl;
-    apply([](auto &...x)
-          { ( (cout << ... << x) << " "); },
-          t);
-    get<0>(t) = 3;
-    cout << m << endl;
-    apply([](auto &...x)
-          { ( (cout << ... << x) << " "); },
-          t);
+	
+	signal(SIGINT, signalHandler);
+	for (int i = 0; !stop; i++)
+	{
+		string s ="12";
+		getline(cin, s);
+		cout << s << endl;
+	}
 
-
-    return 0;
+	return 0;
 }
