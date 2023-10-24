@@ -8,11 +8,11 @@
  * Anything special?
  * 1.Output text coloring.
  * 2.Input error detection.
- * 
- * 
+ *
+ *
  * Complier: g++ (Rev2, Built by MSYS2 project) 13.2.0 ,C++17
  *           g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0 ,C++17
- * 
+ *           g++ (tdm64-1) 9.2.0 ,C++17 (Embarcadero Dev-C++)
  */
 #include <iostream>
 #include <limits>
@@ -64,10 +64,9 @@ enum class SGR
     brightWhite
 };
 
-
 /**
  * @brief Reads input from the user and returns a tuple of the input values.
- * 
+ *
  * @tparam T The types of the input values.
  * @param check A function that checks if the input values are valid.
  * @param prompt The prompt message to display to the user.
@@ -93,6 +92,8 @@ struct person
 double hatSize(const unique_ptr<person> &p);
 double jacketSize(const unique_ptr<person> &p);
 double waistSize(const unique_ptr<person> &p);
+
+// handler for ctrl+c
 void signalHandler(int signum);
 
 void echoInput(double _height, double _weight, int _age);
@@ -162,7 +163,7 @@ tuple<T...> getInput(function<bool(tuple<T...> &)> check, string prompt, string 
 
         this_thread::sleep_for(chrono::milliseconds(1));
 
-        if (ssin.fail() || !check(inp))
+        if (ssin.rdbuf()->in_avail() != 0 || ssin.fail() || !check(inp))
         {
             ssin.clear();
             cout << CSI "1F" CSI "0J" << eprompt << flush;
