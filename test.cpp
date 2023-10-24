@@ -6,23 +6,21 @@
 #include <windows.h>
 using namespace std;
 
-volatile sig_atomic_t stop = 0;
-void signalHandler(int signum)
+template <typename... T>
+double avg(T... x)
 {
-	cout<<"in signal handler"<<endl;
-	stop = 1;
+	int num = sizeof...(x);
+	int sum = (x + ...);
+	double ans = (double)sum / (double)num;
+	return ans;
 }
-
+void test(int &&k)
+{
+	cout << k << endl;
+}
 int main()
 {
-	
-	signal(SIGINT, signalHandler);
-	for (int i = 0; !stop; i++)
-	{
-		string s ="12";
-		getline(cin, s);
-		cout << s << endl;
-	}
+	test(10 + 23);
 
 	return 0;
 }
