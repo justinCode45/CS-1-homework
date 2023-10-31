@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
+
 using namespace std;
+
 int main()
 {
     ifstream inFile;
@@ -14,13 +15,14 @@ int main()
     }
     outFile.open("out.txt");
 
-    while (!inFile.eof())
+    int first, second, third;
+    while (inFile >> first >> second >> third)
     {
-        int first, second, third;
-        inFile >> first >> second >> third;
+
         outFile << "Their sum is " << first + second + third << endl;
     }
     inFile.close();
     outFile.close();
+
     return 0;
 }
