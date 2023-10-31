@@ -196,10 +196,16 @@ double hatSize(const unique_ptr<person> &p)
 
 double jacketSize(const unique_ptr<person> &p)
 {
-    return (p->height * p->weight) / 288.f + (p->age - 30) / 10 * 0.125;
+    if (p->age < 30)
+        return (p->height * p->weight) / 288.f;
+    else
+        return (p->height * p->weight) / 288.f + (p->age - 30) / 10 * 0.125;
 }
 
 double waistSize(const unique_ptr<person> &p)
 {
-    return p->weight / 5.7 + (p->age - 28) / 2 * 0.1;
+    if (p->age < 28)
+        return p->weight / 5.7;
+    else
+        return p->weight / 5.7 + (p->age - 28) / 2 * 0.1;
 }
