@@ -16,10 +16,12 @@ int main()
     }
     outFile.open("out.txt");
 
-    while (!inFile.eof())
+    while (1)
     {
         int first, second, third;
         inFile >> first >> second >> third;
+        if (inFile.eof()) break;
+        
         outFile << "Their sum is " << first + second + third << endl;
     }
     inFile.close();
