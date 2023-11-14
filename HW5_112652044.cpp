@@ -1,14 +1,13 @@
-/* File Name:HW4_112652044.cpp
+/* File Name:HW5_112652044.cpp
  * Author:Justin Chen
  * Email Address:justin.sc12@nycu.edu.tw
- * HW Number:4
- * Description: The purpose of this program is to fix your cpp source syntax error( cin and cout operator) 
- * Last Change:Oct.21,2023
+ * HW Number:5
+ * Description: The purpose of this program is to fix your cpp source syntax error( cin and cout operator)
+ * Last Change: Nov.9,2023
  * Anything special?
- * 1.Output text coloring.
- * 2.Input error detection.
- *
- *
+ * 1.No requirement for spaces between cin, cout and operator.
+ * 2.try to do Lexical analysis and Syntactic analysis (other file)
+ * 
  * Complier: g++ (Rev2, Built by MSYS2 project) 13.2.0 ,C++17
  *           g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0 ,C++17
  *           g++ (tdm64-1) 9.2.0 ,C++17 (Embarcadero Dev-C++)
@@ -40,7 +39,8 @@ int main()
     cin >> iFileName;
     cout << "Enter the output file name: ";
     cin >> oFileName;
-
+    cout<<"You entered input file name: "<<iFileName<<endl;
+    cout<<"You entered output file name: "<<oFileName<<endl;
     ifstream inFile;
     ofstream outFile;
     inFile.open(iFileName);
