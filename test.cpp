@@ -1,27 +1,33 @@
-#include<iostream>
-#include<cstdlib>
-#include<ctime>
-#include<iomanip>
-
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
+#include <vector>
 using namespace std;
 
-volatile sig_atomic_t stop = 0;
-void signalHandler(int signum)
+void func(int arr[][100], int r, int c)
 {
-	cout<<"in signal handler"<<endl;
-	stop = 1;
+	// for (int i = 0; i < r; i++)
+	// {
+	// 	arr[i] = new int[c];
+	// }
+}
+
+void func1(ifstream &in)
+{
 }
 
 int main()
 {
-	
-	signal(SIGINT, signalHandler);
-	for (int i = 0; !stop; i++)
-	{
-		string s ="12";
-		getline(cin, s);
-		cout << s << endl;
-	}
+	// int** arry;
+	// arry = new int*[100];
+	// for (int i = 0; i < 100; i++)
+	// {
+	// 	arry[i] = new int[100];
+	// }
+	int arry[100][100];
+	func(arry, 100, 100);
+	vector<vector<int>> arry2;
 
 	return 0;
 }
