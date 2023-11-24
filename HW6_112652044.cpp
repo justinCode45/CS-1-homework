@@ -5,6 +5,8 @@
  * Description: The purpose of the program is to help user reserve the seat on Airbus A380.
  * Last Change: Nov.9,2023
  * Anything special?
+ *  1. color output
+ *  2. More specical functions are in other file.
  *
  * Complier: g++ (Rev2, Built by MSYS2 project) 13.2.0 ,C++17
  *           g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0 ,C++17
@@ -162,7 +164,7 @@ int main()
             "How many seat do you want to reserve (" + color("1 or 2", FSGR::brightRed) + "): ");
 
         cout << echo << "You entered: " << seatNumber << endl;
-
+        cout << endl;
         for (int i = 0; i < seatNumber; i++)
         {
             bool reserved = false;
@@ -198,16 +200,18 @@ int main()
             {
                 cout << color("No available seat.", FSGR::brightRed) << endl;
                 cout << "Please choose another seat." << endl;
+                cout << endl;
                 i--;
                 continue;
             }
+            printSeat(seat, row, col);
+            cout << endl;
         }
-        printSeat(seat, row, col);
         if (!again())
         {
             break;
         }
-    } 
+    }
 
     delete[] seat;
     return 0;

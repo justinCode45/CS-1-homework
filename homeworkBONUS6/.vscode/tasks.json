@@ -10,7 +10,6 @@
 				"-g",
 				"${workspaceFolder}\\main.cpp",
 				"${workspaceFolder}\\airplane.cpp",
-				"${workspaceFolder}\\scr\\*.cpp",
 				"-o",
 				"${workspaceFolder}\\main.exe",
 				"-std=c++17"
