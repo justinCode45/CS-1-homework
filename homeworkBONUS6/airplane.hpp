@@ -6,53 +6,16 @@
 #include <vector>
 #include <fstream>
 #include <unordered_map>
+#include <set>
+#include "./header/General.hpp"
 
-using namespace std;
-
-
-template <class... T>
-string color(string in, T... c);
-
-
-enum class FSGR
-{
-    black = 30,
-    red,
-    green,
-    yellow,
-    blue,
-    magenta,
-    cyan,
-    white,
-    brightBlack = 90,
-    brightRed,
-    brightGreen,
-    brightYellow,
-    brightBlue,
-    brightMagenta,
-    brightCyan,
-    brightWhite
-};
-
-enum class BSGR
-{
-    black = 40,
-    red,
-    green,
-    yellow,
-    blue,
-    magenta,
-    cyan,
-    white,
-    brightBlack = 100,
-    brightRed,
-    brightGreen,
-    brightYellow,
-    brightBlue,
-    brightMagenta,
-    brightCyan,
-    brightWhite
-};
+using std::string;
+using std::map;
+using std::vector;
+using std::ifstream;
+using std::unordered_map;
+using std::set;
+using std::pair;
 
 class Seat
 {
@@ -84,20 +47,28 @@ public:
     int col;
     map<char, int> colMapci;
     map<int, char> colMapic;
-    Seat** seats;
-    void load(ifstream& file);
+    Seat **seats;
     Cabin()
     {
         seats = nullptr;
     }
-    void print();
+    void load(ifstream &file, string &cabinName);
+    bool reserveSeat(int rowC);
+    string print();
 };
 
 class Airplane
 {
 public:
-    vector<Cabin*> cabins;
-    void load();
+    string name;
+    // vector<Cabin*> cabins;
+    map<string, Cabin *> cabinMap;
+    Airplane(string path)
+    {
+        load(path);
+    }
+    void load(string path);
+    string getCabinList();
 };
 
 #endif

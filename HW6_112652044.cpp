@@ -207,7 +207,7 @@ int main()
         {
             break;
         }
-    }
+    } 
 
     delete[] seat;
     return 0;

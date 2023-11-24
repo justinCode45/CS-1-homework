@@ -26,6 +26,7 @@ struct person
 
 double hatSize(const unique_ptr<person> &p);
 double jacketSize(const unique_ptr<person> &p);
+        
 double waistSize(const unique_ptr<person> &p);
 
 int main()
