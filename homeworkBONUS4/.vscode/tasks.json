@@ -8,11 +8,10 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"${workspaceFolder}\\main.cpp",
-				"${workspaceFolder}\\airplane.cpp",
+				"./scr/*.cpp",
+				"${file}",
 				"-o",
-				"${workspaceFolder}\\main.exe",
-				"-std=c++17"
+				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],
 			"options": {
 				"cwd": "${fileDirname}"

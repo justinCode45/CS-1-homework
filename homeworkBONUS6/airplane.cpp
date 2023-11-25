@@ -5,17 +5,8 @@
 #define CSI "\x1b["
 using namespace std;
 
-template <class... T>
-string color(string in, T... c)
-{
-    string out = CSI;
-    ((out += to_string((int)c) + ';'), ...);
-    out.pop_back();
-    out += 'm' + in + CSI "0m";
-    return out;
-}
 
-void Cabin::load(ifstream &file)
+void Cabin::load(ifstream &file, string &cabinName)
 {
     file >> this->name >> this->rowStart >> this->row >> this->col;
     this->seats = new Seat *[this->row];
@@ -56,16 +47,41 @@ void Cabin::load(ifstream &file)
         }
         seats[r - rowStart][colMapci[c]].nearLavatory = true;
     }
-
+    cabinName = this->name;
 }
 
-void Cabin::print()
+bool Cabin::reserveSeat(int rowC)
 {
-    cout << this->name<<endl;
+    bool reserved = false;
+    for (int i = 0; i < col; i++)
+    {
+        if (seats[rowC - this->rowStart][i].available())
+        {
+            seats[rowC - this->rowStart][i].havePeople = true;
+            reserved = true;
+
+            if (rowC - this->rowStart - 1 >= 0)
+                seats[rowC - this->rowStart - 1][i].havePandemic = true;
+            if (rowC - this->rowStart + 1 < row)
+                seats[rowC - this->rowStart + 1][i].havePandemic = true;
+            if (i - 1 >= 0)
+                seats[rowC - this->rowStart][i - 1].havePandemic = true;
+            if (i + 1 < col)
+                seats[rowC - this->rowStart][i + 1].havePandemic = true;
+            break;
+        }
+    }
+    return reserved;
+}
+
+string Cabin::print()
+{
+    stringstream cout;
+    cout << this->name << endl;
     for (int i = 0; i < row; i++)
     {
         cout.setf(ios::left);
-        cout <<setw(4)<<i + this->rowStart ;
+        cout << setw(4) << i + this->rowStart;
         for (int j = 0; j < col; j++)
         {
             // cout << 'X' <<" ";
@@ -104,24 +120,40 @@ void Cabin::print()
         }
         cout << endl;
     }
+    return cout.str();
 }
 
-void Airplane::load()
+void Airplane::load(string path)
 {
-    std::ifstream file("A380.txt");
+    std::ifstream file(path);
     if (file.fail())
     {
         std::cout << "Failed to open airplane.txt" << std::endl;
+        exit(1);
         return;
     }
+    file >> this->name;
     int n;
     file >> n;
     for (int i = 0; i < n; i++)
     {
-        Cabin* c=new Cabin();
-        c->load(file);
-        cabins.push_back(c);
+        string cabinName;
+        Cabin *c = new Cabin();
+        c->load(file, cabinName);
+        cabinMap[cabinName] = c;
     }
 
     file.close();
+}
+
+string Airplane::getCabinList()
+{
+    string out = "";
+    for (auto &i : cabinMap)
+    {
+        out += i.first + ", ";//color(", ",FSGR::brightWhite);
+    }
+    out.pop_back();
+    out.pop_back();
+    return out;
 }
