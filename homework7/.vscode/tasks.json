@@ -4,15 +4,14 @@
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe build active file",
-			"command": "D:\\MSYS2\\ucrt64\\bin\\g++.exe",
+			"command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
 				"${file}",
-				".\\scr\\Hotel.cpp",
+				"./scr/*.cpp",
 				"-o",
-				"${fileDirname}\\${fileBasenameNoExtension}.exe",
-				"-std=c++20"
+				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],
 			"options": {
 				"cwd": "${fileDirname}"
@@ -21,7 +20,7 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "compiler: D:\\MSYS2\\ucrt64\\bin\\g++.exe"
+			"detail": "compiler: C:\\msys64\\ucrt64\\bin\\g++.exe"
 		}
 	]
 }

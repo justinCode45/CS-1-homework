@@ -3,12 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 namespace hotel
 {
     using std::string;
     using std::vector;
-
+    using std::ostream;
     class Hotel
     {
 
@@ -22,6 +24,7 @@ namespace hotel
         string getRating() const;
         bool addRating(int rating);
         double computeAvg() const;
+        friend ostream& operator<< (ostream& os, const Hotel& in);
 
     private:
         string name;
@@ -29,6 +32,6 @@ namespace hotel
         vector<int> ratings;
     };
 
-} // namespace H
+} // namespace hotel
 
 #endif // HOTEL_HPP

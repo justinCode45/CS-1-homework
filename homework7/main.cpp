@@ -44,15 +44,10 @@ int main()
     cout.precision(2);
 
     cout << endl;
-    cout << setw(20) << left << "Hotel name" << setw(20) << left << "Official rating" << setw(20) << left << "Actual rating" << endl;
-    cout << "------------------------------------------------------------" << endl;
 
     for (const auto &i : hotels)
     {
-        cout << setw(20) << i.getName()
-             << setw(20) << i.getRating()
-             << setw(20) << i.computeAvg()
-             << endl;
+        cout << i;
     }
 
     return 0;
