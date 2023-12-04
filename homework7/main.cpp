@@ -14,10 +14,10 @@ using hotel::Hotel;
 using hotel::HotelList;
 using general::funcTulp;
 
-
 int main()
 {
     signal(SIGINT, general::sigHandler);
+
 
     cout << "The purpose of this program is to compute the average rating of each hotel." << endl;
     cout << "You can input at most finite hotels." << endl;
@@ -25,6 +25,8 @@ int main()
     cout << "Please provide the actual rating file name: actualRating.txt" << endl;
 
     HotelList hotelL; // self-defined class
+
+    /*--------------------------------------------------------------------------------------------------------------------*/
 
     hotelL.push_back(Hotel("The_grand_hotel", "5-star"));
     cout << "Name and official rating of hotel 0: " << hotelL[0].getName() << " " << hotelL[0].getOfficalRating().value_or("None") << endl;
@@ -52,21 +54,21 @@ int main()
     cout << hotelL << endl;
 
     while (1)
-    {
+    {   
         auto [name] = general::getInput<string>(
             (funcTulp<string>)[&](tuple<string> & in)->bool {
                 return hotelL.find(get<0>(in));
             },
             "Please input the name of the hotel you want to search: ",
             color("Not in the list",FSGR::brightRed) + ", please try again: ");
-
+        
         auto [rating] = general::getInput<int>(
             (funcTulp<int>)[](tuple<int> & in)->bool {
                 return get<0>(in) >= 1 && get<0>(in) <= 5;
             },
             "Please input the rating you want to give (1~5): ",
             "Please input the rating you want to give " + color("(1~5)", FSGR::brightRed) + ":");
-
+        
         hotelL[name].addRating(rating);
 
         sort(hotelL.begin(), hotelL.end(), hotel::compareHotel);

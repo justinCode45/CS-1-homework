@@ -1,6 +1,5 @@
 #include "../header/Hotel.hpp"
 
-
 namespace hotel
 {
     Hotel::Hotel() : name("None"), OfficalRating("None")
@@ -75,7 +74,7 @@ namespace hotel
         os << "Official rating : " << outputRating(oR) << std::endl;
         os << "Actual   rating : " << in.computeAvg() << color("*", FSGR::brightYellow) << std::endl;
         os << "Detail          : " << in.detail << std::endl;
-        
+
         os.unsetf(std::ios::fixed);
         os.precision(6);
         return os;
@@ -144,13 +143,15 @@ namespace hotel
 
         for (int i = 0; i < r; i++)
         {
-            out += general::color("*", general::FSGR::brightWhite);
+            out += general::color("*", general::SGRC::blink,
+                                  general::SGRC::underline,
+                                  general::FSGR::brightYellow);
             orlangth++;
         }
 
         if (d >= 0.5)
         {
-            out += general::color("*", general::FSGR::white);
+            out += general::color("*", general::FSGR::brightWhite);
             orlangth++;
         }
         else if (d > 0)
@@ -161,7 +162,7 @@ namespace hotel
 
         for (int i = 0; i < 5 - orlangth; i++)
         {
-            out += " ";
+            out += general::color(" ", general::SGRC::underline);
         }
 
         return out;

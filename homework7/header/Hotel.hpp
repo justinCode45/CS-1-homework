@@ -48,6 +48,14 @@ namespace hotel
         vector<int> ratings;
     };
 
+    /**
+     * @class HotelList
+     * @brief Represents a list of hotels.
+     * 
+     * The HotelList class provides functionality to manage a list of hotels.
+     * It supports operations such as adding hotels, removing hotels, finding hotels by name,
+     * accessing hotels by index or name, and iterating over the hotels in the list.
+     */
     class HotelList
     {
     private:
