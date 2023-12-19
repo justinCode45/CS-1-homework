@@ -3,26 +3,21 @@
 #include <tuple>
 #include <functional>
 #include <limits>
-
-
 using namespace std;
 using namespace std::chrono;
 
-tuple<microseconds, long long> time_it(function<int(long long)> f, int n)
+tuple<microseconds, int> time_it(function<int(int)> f, int n)
 {
     auto start = high_resolution_clock::now();
-    long long result = f(n);
+    int result = f(n);
     auto end = high_resolution_clock::now();
     return make_tuple(duration_cast<microseconds>(end - start), result);
 }
 
-
-
-long long trianNum_rec(int n)
+int trianNum_rec(int n)
 {
-    static long long arr[10000]; //dp
-    
-    if (n < 10000 && arr[n] != 0)
+    static int arr[20000]; // dp
+    if (n < 20000 && arr[n] != 0)
         return arr[n];
     if (n == 0)
     {
@@ -47,11 +42,11 @@ long long trianNum_rec(int n)
     return 3 * trianNum_rec(n - 1) - 3 * trianNum_rec(n - 2) + trianNum_rec(n - 3);
 }
 
-long long trianNum_iter(int n)
+int trianNum_iter(int n)
 {
-    long long a1 = 0;
-    long long a2 = 1;
-    long long a3 = 3;
+    int a1 = 0;
+    int a2 = 1;
+    int a3 = 3;
     if (n == 0)
     {
         return 0;
@@ -66,7 +61,7 @@ long long trianNum_iter(int n)
     }
     for (int i = 3; i <= n; i++)
     {
-        long long temp = a3;
+        int temp = a3;
         a3 = 3 * a3 - 3 * a2 + a1;
         a1 = a2;
         a2 = temp;
@@ -76,26 +71,58 @@ long long trianNum_iter(int n)
 
 int main()
 {
-    int n;
-    cout << "Enter a positive number: ";
-    cin >> n;
-    {
-        auto result = time_it(trianNum_rec, n);
-        cout << "trianNum_rec(" << n << ") = " << get<1>(result) << endl;
-        cout << "Time used: " << get<0>(result) << endl;
-    }
+    int overflow_n = 0;
 
+    while (1)
     {
-        auto result = time_it(trianNum_iter, n);
-        cout << "trianNum_iter(" << n << ") = " << get<1>(result) << endl;
-        cout << "Time used: " << get<0>(result) << endl;
-    }
 
-    // {
-    //     auto result = time_it(trianNum_fastpower, n);
-    //     cout << "trianNum_fastpower(" << n << ") = " << get<1>(result) << endl;
-    //     cout << "Time used: " << get<0>(result) << endl;
-    // }
+        int n;
+        cout << "Enter a positive number: ";
+        cin >> n;
+        for (int i = 0; i <= n; i++)
+        {
+            cout << trianNum_iter(i) << " ";
+            if ((i + 1) % 10 == 0)
+                cout << endl;
+        }
+        cout << endl
+             << endl;
+
+        {
+            auto result = time_it(trianNum_iter, n);
+            cout << "trianNum_iter(" << n << ") = " << get<1>(result) << endl;
+            cout << "Time used: " << get<0>(result).count() << " micorseconds" << endl;
+        }
+        cout << endl;
+        if ( n < 20000)
+        {
+            auto result = time_it(trianNum_rec, n);
+            cout << "trianNum_rec(" << n << ") = " << get<1>(result) << endl;
+            cout << "Time used: " << get<0>(result).count() << " micorseconds" << endl;
+        }
+        else
+        {
+            cout << "trianNum_rec(" << n << ") = " << "stack overflow" << endl;
+        }
+        cout << endl;
+        for (int i = overflow_n - 100; i <= 10000000000; i++)
+        {
+            if (trianNum_iter(i) < 0)
+            {
+                cout << " when n > " << i << " trainNum_iter(n) overflow" << endl;
+                overflow_n = i;
+                break;
+            }
+        }
+
+        char again;
+        cout << "Do you want to continue? (y/n): ";
+        cin >> again;
+        if (again == 'n' || again == 'N')
+        {
+            break;
+        }
+    }
 
     return 0;
 }

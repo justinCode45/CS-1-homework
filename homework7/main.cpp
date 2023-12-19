@@ -1,5 +1,5 @@
-#include "./header/Hotel.hpp"
-#include "./header/General.hpp"
+#include ".\\header\\Hotel.hpp"
+#include ".\\header\\General.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
