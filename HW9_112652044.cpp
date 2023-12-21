@@ -71,7 +71,7 @@ int trianNum_iter(int n)
 
 int main()
 {
-    int overflow_n = 0;
+    int overflow_n = 10000;
 
     while (1)
     {
@@ -102,7 +102,7 @@ int main()
         }
         else
         {
-            cout << "trianNum_rec(" << n << ") = " << "stack overflow" << endl;
+            cout << "trianNum_rec(" << n << ") " << "may cause stack overflow" << endl;
         }
         cout << endl;
         for (int i = overflow_n - 100; i <= 10000000000; i++)
