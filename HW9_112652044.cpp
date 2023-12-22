@@ -1,8 +1,19 @@
+/* Author:Justin Chen
+ * Email Address:justin.sc12@nycu.edu.tw
+ * HW Number: 9
+ * Description: Test itrative and recursive version of trianNum, and compare their time.
+ * Last Change: Dec.22,2023
+ * Anything special?
+ *  1. reduce time used of recursive version 
+ *  2. the accuracy of time is nanoseconds
+ *
+ * Complier: g++ (Rev2, Built by MSYS2 project) 13.2.0 ,C++17
+ *
+ */
 #include <iostream>
 #include <chrono>
 #include <tuple>
 #include <functional>
-#include <limits>
 using namespace std;
 using namespace std::chrono;
 
@@ -71,7 +82,7 @@ int trianNum_iter(int n)
 
 int main()
 {
-    int overflow_n = 10000;
+    int overflow_n = 30000;
 
     while (1)
     {
@@ -94,7 +105,7 @@ int main()
             cout << "Time used: " << get<0>(result).count() << " micorseconds" << endl;
         }
         cout << endl;
-        if ( n < 20000)
+        if (n < 20000)
         {
             auto result = time_it(trianNum_rec, n);
             cout << "trianNum_rec(" << n << ") = " << get<1>(result) << endl;
@@ -102,7 +113,8 @@ int main()
         }
         else
         {
-            cout << "trianNum_rec(" << n << ") " << "may cause stack overflow" << endl;
+            cout << "trianNum_rec(" << n << ") "
+                 << "may cause stack overflow" << endl;
         }
         cout << endl;
         for (int i = overflow_n - 100; i <= 10000000000; i++)
